@@ -1,4 +1,8 @@
 <script setup>
+import MovieItem from './components/MovieItem.vue'
+import { useMovieStore } from './stores/MovieStore'
+
+const movieStore = useMovieStore()
 </script>
 
 <template>
@@ -6,6 +10,22 @@
     <header class="header">
       <img src="/logo.svg" alt="logo" class="header-logo" />
     </header>
+    <div class="tabs">
+      <button :class="['btn', { btn_green: movieStore.activeTab === 1 }]">
+        Favorite
+      </button>
+      <button :class="['btn', { btn_green: movieStore.activeTab === 2 }]">
+        Search
+      </button>
+    </div>
+    <div class="movies" v-if="movieStore.activeTab === 1">
+      <h3>All Movies</h3>
+      <MovieItem
+        v-for="movie of movieStore.movies"
+        :key="movie.id"
+        :movie="movie" />
+    </div>
+    <div class="search" v-else>Search</div>
   </main>
 </template>
 
@@ -39,6 +59,7 @@
 
 .btn_green {
   background: #37df5c;
+  color: #ffffff;
 }
 
 .tabs {
