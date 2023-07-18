@@ -1,8 +1,12 @@
 <script setup>
-import MovieItem from './components/MovieItem.vue'
 import { useMovieStore } from './stores/MovieStore'
+import MovieItem from './components/MovieItem.vue'
+import SearchTab from './components/SearchTab.vue'
 
 const movieStore = useMovieStore()
+const setTab = (id) => {
+  movieStore.setActiveTab(id)
+}
 </script>
 
 <template>
@@ -11,21 +15,36 @@ const movieStore = useMovieStore()
       <img src="/logo.svg" alt="logo" class="header-logo" />
     </header>
     <div class="tabs">
-      <button :class="['btn', { btn_green: movieStore.activeTab === 1 }]">
+      <button
+        :class="['btn', { btn_green: movieStore.activeTab === 1 }]"
+        @click="setTab(1)"
+      >
         Favorite
       </button>
-      <button :class="['btn', { btn_green: movieStore.activeTab === 2 }]">
+      <button
+        :class="['btn', { btn_green: movieStore.activeTab === 2 }]"
+        @click="setTab(2)"
+      >
         Search
       </button>
     </div>
     <div class="movies" v-if="movieStore.activeTab === 1">
-      <h3>All Movies</h3>
+      <div>
+        <h3>Watched (count: {{ movieStore.watched.length }})</h3>
+        <MovieItem
+          v-for="movie of movieStore.watched"
+          :key="movie.id"
+          :movie="movie" />
+      </div>
+      <h3>All (count: {{ movieStore.movies.length }})</h3>
       <MovieItem
         v-for="movie of movieStore.movies"
         :key="movie.id"
         :movie="movie" />
     </div>
-    <div class="search" v-else>Search</div>
+    <div class="search" v-else>
+      <SearchTab />
+    </div>
   </main>
 </template>
 
