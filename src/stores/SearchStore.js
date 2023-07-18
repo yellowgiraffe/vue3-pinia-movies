@@ -2,6 +2,29 @@ import { defineStore } from 'pinia'
 import { useMovieStore } from './MovieStore'
 import { ref } from 'vue'
 
+export const useSearchStore = defineStore('searchStore', () => {
+  const isLoading = ref(false)
+  const movies = ref([])
+  
+  const searchMovies = async (keyword) => {
+    isLoading.value = true
+    const response = await fetch(`${import.meta.env.VITE_BASE_URL}search/movie?api_key=${import.meta.env.VITE_API_KEY}&query=${keyword}`)
+    const data = await response.json()
+    movies.value = data.results
+    isLoading.value = false
+  }
+  
+  const addToFavorite = (movie) => {
+    const movieStore = useMovieStore()
+    movieStore.movies.push({ ...movie, isWatched: false })
+    movieStore.activeTab = 1
+  }
+  
+  return {
+    isLoading, movies, searchMovies, addToFavorite
+  }
+})
+
 // Options API
 // export const useSearchStore = defineStore('searchStore', {
 //   state: () => ({
@@ -23,26 +46,3 @@ import { ref } from 'vue'
 //     }
 //   }
 // })
-
-export const useSearchStore = defineStore('searchStore', () => {
-  const isLoading = ref(false)
-  const movies = ref([])
-
-  const searchMovies = async (keyword) => {
-    isLoading.value = true
-    const response = await fetch(`${import.meta.env.VITE_BASE_URL}search/movie?api_key=${import.meta.env.VITE_API_KEY}&query=${keyword}`)
-    const data = await response.json()
-    movies.value = data.results
-    isLoading.value = false
-  }
-
-  const addToFavorite = (movie) => {
-    const movieStore = useMovieStore()
-    movieStore.movies.push({ ...movie, isWatched: false })
-    movieStore.activeTab = 1
-  }
-
-  return {
-    isLoading, movies, searchMovies, addToFavorite
-  }
-})
