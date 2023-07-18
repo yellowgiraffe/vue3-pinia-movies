@@ -1,12 +1,20 @@
 <script setup>
 import { useMovieStore } from '../stores/MovieStore'
+import { useSearchStore } from '../stores/SearchStore'
 
 const movieStore = useMovieStore()
+const searchStore = useSearchStore()
+
 const props = defineProps({
   movie: {
     type: Object,
     required: true,
-    defauld: () => {}
+    default: () => {}
+  },
+  type: {
+    type: String,
+    required: false,
+    default: 'favorite'
   }
 })
 </script>
@@ -22,12 +30,17 @@ const props = defineProps({
         {{ movie.original_title }} ({{ movie.release_date }})
       </div>
       <span class="movie-overview">{{ movie.overview }}</span>
-      <div class="movie-buttons">
+      <div v-if="type === 'favorite'" class="movie-buttons">
         <button class="btn movie-buttons-watched" @click="movieStore.toggleWatched(movie.id)">
           <span v-if="!movie.isWatched">Watched</span>
           <span v-else>Unwatched</span>
         </button>
-        <button class="btn movie-buttons-delete" @click="movieStore.deleteFromFavorites">Delete</button>
+        <button class="btn movie-buttons-delete" @click="movieStore.deleteFromFavorites(movie.id)">Delete</button>
+      </div>
+      <div v-if="type === 'search'" class="movie-buttons" @click="searchStore.addToFavorite(movie)">
+        <button class="btn btn_green">
+          Add
+        </button>
       </div>
     </div>
   </div>

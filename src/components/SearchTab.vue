@@ -26,6 +26,7 @@ const searchText = ref('')
       v-for="movie in searchStore.movies"
       :key="movie.id"
       :movie="movie"
+      type="search"
     />
   </div>
 </template>
